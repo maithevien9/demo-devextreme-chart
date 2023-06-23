@@ -38,5 +38,6 @@
   { "value": "GMT (UTC)", "index": 153 },
   { "value": "GMT Seconds", "index": 154 },
   { "value": "Date Day", "index": 155 },
-  { "value": "Date Month", "index": 156 }
+  { "value": "Date Month", "index": 156 },
+  { "value": "Flight Number", "index": 157 }
 ]
