@@ -59,6 +59,12 @@ function About() {
   const newArr = paramsData2.slice(startValue, endValue);
 
   const options2 = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false,
+      },
+    },
     toolbox: {
       feature: {
         dataZoom: {
