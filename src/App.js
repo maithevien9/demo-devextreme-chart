@@ -4,6 +4,10 @@ import paramsData from './params.json';
 import ReactEcharts from 'echarts-for-react';
 
 export default function App() {
+  const preventEventsHandler = () => {
+    console.log('prevent events handler called');
+  };
+
   const options = {
     grid: {
       left: '3%',
@@ -13,6 +17,10 @@ export default function App() {
     },
     toolbox: {
       feature: {
+        dataZoom: {
+          yAxisIndex: 'none',
+        },
+        restore: {},
         saveAsImage: {},
       },
     },
@@ -24,14 +32,65 @@ export default function App() {
     yAxis: {
       type: 'value',
     },
+
     series: paramsData.map((item) => ({ ...item, showSymbol: false })),
+    // dataZoom: [
+    //   {
+    //     type: 'inside',
+    //     xAxisIndex: 0,
+    //     filterMode: 'filter',
+    //   },
+    // ],
     dataZoom: [
+      // {
+      //   type: 'slider',
+      // },
       {
-        throttle: 50,
         type: 'inside',
       },
+      // {
+      //   show: true,
+      //   realtime: true,
+      //   start: 30,
+      //   end: 70,
+      //   xAxisIndex: [0, 1],
+      // },
+      // {
+      //   type: 'inside',
+      //   realtime: true,
+      //   start: 30,
+      //   end: 70,
+      //   xAxisIndex: [0, 1],
+      // },
     ],
+
+    // dataZoom: [
+    //   {
+    //     throttle: 50,
+    //     type: 'inside',
+    //   },
+    // ],
+    onClick: preventEventsHandler,
   };
 
-  return <ReactEcharts option={options} />;
+  preventEventsHandler(); // Test if it logs correctly
+
+  const onEvents = {
+    click: preventEventsHandler, // Note: The event name should be lowercase 'click'
+  };
+
+  const handleDataZoom = (params) => {
+    console.log('check');
+
+    // setOptions(updatedOptions);
+  };
+
+  return (
+    <ReactEcharts
+      option={options}
+      onEvents={{
+        dataZoom: handleDataZoom,
+      }}
+    />
+  );
 }
