@@ -54,7 +54,7 @@ function Home() {
 
 function About() {
   const [startValue, setStartValue] = useState(0);
-  const [endValue, setEndValue] = useState(5);
+  const [endValue, setEndValue] = useState(9);
 
   const newArr = paramsData2.slice(startValue, endValue);
 
