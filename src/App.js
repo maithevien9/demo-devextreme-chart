@@ -5,15 +5,12 @@ import paramsData2 from './params2.json';
 import { useState } from 'react';
 import ReactEcharts from 'echarts-for-react';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 function Home() {
-  const [zoomLevel, setZoomLevel] = useState({
-    start: 20,
-    end: 40,
-  });
-
+  const xAxis = lastData.map((item) => item.frame);
+  const newXAxis = [...xAxis, ...xAxis, ...xAxis, ...xAxis, ...xAxis];
   const options = {
     toolbox: {
       feature: {
@@ -25,7 +22,7 @@ function Home() {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: lastData.map((item) => item.frame),
+      data: newXAxis,
     },
     yAxis: {
       type: 'value',
@@ -39,9 +36,6 @@ function Home() {
         showDetail: false,
         zoomLock: false,
         brushSelect: false,
-        bottom: 10,
-        height: 20,
-        ...zoomLevel,
       },
       {
         type: 'inside',
