@@ -2,13 +2,16 @@ import lastData from './lastData.json';
 import paramsData from './params.json';
 import paramsData2 from './params2.json';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactEcharts from 'echarts-for-react';
 
 import React, { useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 function Home() {
+  const chartRef = useRef(null);
+  const [dataZoomEnabled, setDataZoomEnabled] = useState(false);
+
   const xAxis = lastData.map((item) => item.frame);
   const newXAxis = [...xAxis, ...xAxis, ...xAxis, ...xAxis, ...xAxis];
   const options = {
@@ -43,7 +46,44 @@ function Home() {
     ],
   };
 
-  return <ReactEcharts option={options} style={{ height: 500 }} />;
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // Check if the keyboard shortcut is pressed (e.g., Ctrl + D)
+      if (event.key === 'd') {
+        console.log('check', dataZoomEnabled);
+        if (!dataZoomEnabled) {
+          const chartInstance = chartRef.current.getEchartsInstance();
+
+          // Programmatically trigger the dataZoom selection
+          chartInstance.dispatchAction({
+            type: 'takeGlobalCursor',
+            key: 'dataZoomSelect',
+            dataZoomSelectActive: true,
+          });
+          setDataZoomEnabled(true);
+        } else {
+          console.log('rechert');
+          const chartInstance = chartRef.current.getEchartsInstance();
+
+          // Programmatically trigger the dataZoom selection
+          chartInstance.dispatchAction({
+            type: 'takeGlobalCursor',
+            key: 'dataZoomSelect',
+            dataZoomSelectActive: false,
+          });
+          setDataZoomEnabled(false);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [dataZoomEnabled]);
+
+  return <ReactEcharts option={options} style={{ height: 500 }} ref={chartRef} />;
 }
 
 function About() {
