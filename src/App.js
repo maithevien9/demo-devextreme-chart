@@ -8,18 +8,23 @@ import ReactEcharts from 'echarts-for-react';
 import React, { useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
+const bc = new BroadcastChannel('my-awesome-site');
+
 function Home() {
   const chartRef = useRef(null);
   const [dataZoomEnabled, setDataZoomEnabled] = useState(false);
-  const [zoomRatio, setZoomRatio] = useState(0);
+  const [zoomRatio, setZoomRatio] = useState(100);
 
   useEffect(() => {
     const getZoomRatio = () => {
       const chart = chartRef.current.getEchartsInstance();
       const option = chart.getOption();
       const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
-      console.log(option.dataZoom[0].end, option.dataZoom[0].start);
       setZoomRatio(newZoomRatio);
+    };
+
+    const handleReStore = () => {
+      setZoomRatio(100);
     };
 
     // Call getZoomRatio initially
@@ -28,10 +33,12 @@ function Home() {
     // Attach getZoomRatio to the chart's zoom event
     const chartInstance = chartRef.current.getEchartsInstance();
     chartInstance.on('dataZoom', getZoomRatio);
+    chartInstance.on('restore', handleReStore);
 
     // Cleanup function to detach the event listener
     return () => {
       chartInstance.off('dataZoom', getZoomRatio);
+      chartInstance.off('restore', handleReStore);
     };
   }, []);
 
@@ -77,7 +84,6 @@ function Home() {
     const handleKeyDown = (event) => {
       // Check if the keyboard shortcut is pressed (e.g., Ctrl + D)
       if (event.key === 'd') {
-        console.log('check', dataZoomEnabled);
         if (!dataZoomEnabled) {
           const chartInstance = chartRef.current.getEchartsInstance();
 
@@ -89,7 +95,6 @@ function Home() {
           });
           setDataZoomEnabled(true);
         } else {
-          console.log('rechert');
           const chartInstance = chartRef.current.getEchartsInstance();
 
           // Programmatically trigger the dataZoom selection
@@ -226,6 +231,14 @@ function About() {
 }
 
 export default function App() {
+  useEffect(() => {
+    bc.onmessage = (event) => {
+      if (event.data === 'Event') {
+        alert('oke');
+      }
+    };
+  }, []);
+
   return (
     <Router>
       <div>
@@ -237,6 +250,8 @@ export default function App() {
             <Link to='/demo2'>Demo 2</Link>
           </li>
         </ul>
+
+        {/* <button onClick={() => bc.postMessage('Event')}>Trigger</button> */}
 
         <hr />
 
