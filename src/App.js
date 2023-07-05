@@ -11,6 +11,29 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 function Home() {
   const chartRef = useRef(null);
   const [dataZoomEnabled, setDataZoomEnabled] = useState(false);
+  const [zoomRatio, setZoomRatio] = useState(0);
+
+  useEffect(() => {
+    const getZoomRatio = () => {
+      const chart = chartRef.current.getEchartsInstance();
+      const option = chart.getOption();
+      const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
+      console.log(option.dataZoom[0].end, option.dataZoom[0].start);
+      setZoomRatio(newZoomRatio);
+    };
+
+    // Call getZoomRatio initially
+    getZoomRatio();
+
+    // Attach getZoomRatio to the chart's zoom event
+    const chartInstance = chartRef.current.getEchartsInstance();
+    chartInstance.on('dataZoom', getZoomRatio);
+
+    // Cleanup function to detach the event listener
+    return () => {
+      chartInstance.off('dataZoom', getZoomRatio);
+    };
+  }, []);
 
   const xAxis = lastData.map((item) => item.frame);
   const newXAxis = [...xAxis, ...xAxis, ...xAxis, ...xAxis, ...xAxis];
@@ -19,7 +42,11 @@ function Home() {
       feature: {
         dataZoom: {
           yAxisIndex: 'none',
+          icon: {
+            back: 'none',
+          },
         },
+        restore: {},
       },
     },
     xAxis: {
@@ -31,7 +58,7 @@ function Home() {
       type: 'value',
     },
 
-    series: paramsData.map((item) => ({ ...item, showSymbol: false })),
+    series: paramsData.slice(0, 2).map((item) => ({ ...item, showSymbol: false })),
 
     dataZoom: [
       {
@@ -83,7 +110,12 @@ function Home() {
     };
   }, [dataZoomEnabled]);
 
-  return <ReactEcharts option={options} style={{ height: 500 }} ref={chartRef} />;
+  return (
+    <div>
+      <div>Zoom Level: {100 - zoomRatio}%</div>
+      <ReactEcharts option={options} style={{ height: 500 }} ref={chartRef} />
+    </div>
+  );
 }
 
 function About() {
@@ -103,7 +135,11 @@ function About() {
       feature: {
         dataZoom: {
           yAxisIndex: 'none',
+          icon: {
+            back: 'none',
+          },
         },
+        restore: {},
       },
     },
     axisPointer: {
