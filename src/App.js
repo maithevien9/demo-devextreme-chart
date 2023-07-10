@@ -72,15 +72,21 @@ function Home() {
         splitLine: {
           show: true,
         },
+        offset: 5,
       },
       {
-        type: 'category',
-        boundaryGap: false,
+        // type: 'category',
         data: newXAxis2,
         splitLine: {
           show: false,
         },
-        offset: 0,
+        offset: 10,
+        axisTick: {
+          show: false, // Hide the xAxis tick line
+        },
+        axisLine: {
+          show: false, // Hide the xAxis line
+        },
       },
     ],
     yAxis: {
