@@ -2,111 +2,113 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import resizeIcon from './imgs/resize.png';
 
-const Resizable = styled.div`
-  position: absolute;
-  border: 3px solid rgba(128, 128, 128, 0.6);
-  background: none;
-  height: 200px;
-  width: 46px;
-  bottom: 0;
-  left: 0;
-`;
-
-const ComponentA = () => {
-  const [position, setPosition] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const refRight = useRef(null);
-  const resizingRef = useRef(null);
+const ComponentA = ({ start, end, setStart, setEnd, setPosition, position }) => {
+  const isMouseDownTopRef = useRef(null);
+  const isMouseDownBottomRef = useRef(null);
   const isMouseDownRef = useRef(null);
-  const wrapperRef = useRef(null);
-  const [isShowReSize, setIsShowReSize] = useState(false);
-  const [isMouseDown, setIsMouseDown] = useState(false);
 
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      if (!isDragging || isShowReSize) return;
-      const { clientY } = event;
-      setPosition(300 - clientY);
-    };
+  const topResizeRef = useRef(null);
+  const movingRef = useRef(null);
 
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
+  const bottomResizeRef = useRef(null);
+  const [moving, setMoving] = useState(false);
+  const [mouseMoveTop, setMouseMoveTop] = useState(false);
+  const [mouseMoveBottom, setMouseMoveBottom] = useState(false);
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging]);
-
-  const handleMouseDown = () => {
-    setIsDragging(true);
+  const handleMouseUpTop = (event) => {
+    isMouseDownTopRef.current = false;
   };
 
-  const [height, setHeight] = useState(200);
+  const handleMouseUpBottom = (event) => {
+    isMouseDownBottomRef.current = false;
+  };
+
+  const topResize = topResizeRef.current;
+  const bottomResize = bottomResizeRef.current;
+  const movingContainer = movingRef.current;
+
+  const handleMouseMoveTop = (event) => {
+    if (isMouseDownTopRef.current) {
+      const Y = event.clientY - 150;
+      const percent = Y / 4;
+      if (percent > 0 && percent < 100 && start < end) {
+        setPosition(Y);
+        setStart(Y / 4);
+      }
+    }
+  };
+
+  const handleMouseDownTop = (event) => {
+    isMouseDownTopRef.current = true;
+
+    document.addEventListener('mousemove', handleMouseMoveTop);
+    document.addEventListener('mouseup', handleMouseUpTop);
+  };
+
+  useEffect(() => {
+    topResize?.addEventListener('mousedown', handleMouseDownTop);
+
+    return () => {
+      topResize?.removeEventListener('mousedown', handleMouseDownTop);
+    };
+  }, [topResize, mouseMoveTop]);
+
+  const handleMouseMoveBottom = (event) => {
+    if (isMouseDownBottomRef.current && mouseMoveBottom) {
+      const Y = event.clientY - 150;
+      const percent = Y / 4;
+
+      if (percent > 0 && percent < 100 && percent > start) {
+        setEnd(Y / 4);
+      }
+    }
+  };
+
+  const handleMouseDownBottom = (event) => {
+    isMouseDownBottomRef.current = true;
+
+    document.addEventListener('mousemove', handleMouseMoveBottom);
+    document.addEventListener('mouseup', handleMouseUpBottom);
+  };
+
+  useEffect(() => {
+    bottomResize?.addEventListener('mousedown', handleMouseDownBottom);
+
+    return () => {
+      bottomResize?.removeEventListener('mousedown', handleMouseDownBottom);
+    };
+  }, [bottomResize, mouseMoveBottom]);
 
   const handleMouseMove = (event) => {
-    if (isMouseDownRef.current && isShowReSize) {
-      const resizeElm = resizingRef.current;
+    if (isMouseDownRef.current) {
+      const Y = event.clientY - 150;
+      const percent = Y / 4;
 
-      if (isMouseDownRef.current && event.clientY < 500) {
-        resizeElm.style.height = `${500 - event.clientY}px`;
+      if (percent > 0 && percent < 100 && percent + end - start < 100) {
+        console.log(isMouseDownRef.current);
+        setPosition(Y);
       }
     }
   };
 
   const handleMouseUp = (event) => {
-    if (isShowReSize && isMouseDownRef.current) {
-      isMouseDownRef.current = false;
-      setIsShowReSize(false);
-
-      const height = 500 - event.clientY;
-
-      setHeight(Number(height));
-      const wrapperCurrent = wrapperRef.current;
-      // wrapperCurrent.style.height = height;
-
-      wrapperCurrent.style.height = height;
-    }
+    isMouseDownRef.current = false;
   };
 
-  const handleMouseDown2 = (event) => {
+  const handleMouseDown = (event) => {
     isMouseDownRef.current = true;
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  const resizerRight = refRight.current;
-
-  const handleClickWave = (event) => {
-    !isDragging && setIsShowReSize((prev) => !prev);
-  };
-
   useEffect(() => {
-    resizerRight?.addEventListener('mousedown', handleMouseDown2);
+    movingContainer?.addEventListener('mousedown', handleMouseDown);
 
     return () => {
-      resizerRight?.removeEventListener('mousedown', handleMouseDown2);
+      movingContainer?.removeEventListener('mousedown', handleMouseDown);
     };
-  }, [resizerRight, isShowReSize]);
-
-  const handleClickOutside = (event) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-      setIsShowReSize(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  }, [movingContainer, moving]);
 
   return (
     <div
@@ -118,23 +120,39 @@ const ComponentA = () => {
       }}
     >
       <div
-        ref={wrapperRef}
         style={{
-          position: 'absolute',
-          bottom: `${position}px`,
-          left: 0,
-          height: height ?? 100,
+          height: `${end - start}%`,
           width: '40px',
-          backgroundColor: '#ccc',
-          cursor: 'grab',
+          backgroundColor: '#b1b1b4',
+          position: 'relative',
+          zIndex: 100,
+          top: position,
+          left: 0,
         }}
-        onMouseDown={handleMouseDown}
-        onClick={handleClickWave}
       >
-        <Resizable ref={resizingRef} style={{ display: isShowReSize ? 'flex' : 'none' }}>
-          <div ref={refRight} style={{ backgroundImage: `url(${resizeIcon})` }} className='resize-component'></div>
-        </Resizable>
-        {/* Content of component B goes here */}
+        <div
+          ref={topResizeRef}
+          style={{ width: '100%', height: 10, cursor: 'ns-resize' }}
+          onMouseEnter={() => setMouseMoveTop(true)}
+          onMouseLeave={() => mouseMoveTop && setMouseMoveTop(false)}
+        />
+        <div
+          ref={movingRef}
+          style={{
+            height: 'calc(100% - 20px)',
+            width: '40px',
+            backgroundColor: '#b1b1b4',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={() => setMoving(true)}
+          onMouseLeave={() => moving && setMoving(false)}
+        />
+        <div
+          ref={bottomResizeRef}
+          style={{ width: '100%', height: 10, cursor: 'ns-resize' }}
+          onMouseEnter={() => setMouseMoveBottom(true)}
+          onMouseLeave={() => mouseMoveBottom && setMouseMoveBottom(false)}
+        />
       </div>
     </div>
   );

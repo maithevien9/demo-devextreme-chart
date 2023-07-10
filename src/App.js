@@ -10,6 +10,15 @@ import paramsData2 from './params2.json';
 import Ruler from './Ruler';
 import ComponentA from './DroppableContainer';
 import echarts from 'echarts';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  ${({ selectedFrame, start, end, position }) =>
+    selectedFrame !== null &&
+    `[clip-path="url(#zr0-c${selectedFrame ?? 1})"] {transform: translate(0%, ${2 + (position * 100) / 500}%) scale(1, ${
+      (end - start) / 100
+    }); }`}
+`;
 
 const bc = new BroadcastChannel('my-awesome-site');
 
@@ -17,6 +26,11 @@ function Home() {
   const chartRef = useRef(null);
   const [dataZoomEnabled, setDataZoomEnabled] = useState(false);
   const [zoomRatio, setZoomRatio] = useState(100);
+  const [selectedFrame, setSelectedFrame] = useState(0);
+
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(100);
+  const [position, setPosition] = useState(0);
 
   useEffect(() => {
     const getZoomRatio = () => {
@@ -67,7 +81,6 @@ function Home() {
     xAxis: [
       {
         type: 'category',
-        boundaryGap: false,
         data: newXAxis,
         splitLine: {
           show: true,
@@ -95,23 +108,13 @@ function Home() {
       splitLine: {
         show: false,
       },
+      // hide the yAxis line
+      show: false,
     },
 
     series: paramsData.slice(0, 2).map((item) => ({ ...item, showSymbol: false })),
 
     dataZoom: [
-      // {
-      //   type: 'slider',
-      //   show: true,
-      //   yAxisIndex: 0, // Index of the yAxis to apply dataZoom
-      //   top: '20%', // Position from the top edge of the chart
-      //   start: 0, // Initial range start
-      //   end: 100, // Initial range end
-      //   handleSize: '100%', // Size of the handle
-      //   handleStyle: {
-      //     color: '#ddd', // Color of the handle
-      //   },
-      // },
       {
         type: 'slider',
         showDetail: false,
@@ -163,24 +166,24 @@ function Home() {
     <div>
       <div>Zoom Level: {100 - zoomRatio}%</div>
 
-      <div>
-        <ReactEcharts option={options} style={{ height: 500, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
-      </div>
+      <Wrapper selectedFrame={selectedFrame} start={start} end={end} position={position || -20}>
+        <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
+      </Wrapper>
 
       <div
         style={{
           width: 400,
-          height: 500,
+          height: 50,
           display: 'flex',
           justifyContent: 'flex-start',
           paddingLeft: 80,
           position: 'absolute',
-          top: 100,
+          top: 110,
           left: 0,
           paddingTop: 50,
         }}
       >
-        {/* <ComponentA /> */}
+        <ComponentA start={start} end={end} setStart={setStart} setEnd={setEnd} position={position} setPosition={setPosition} />
       </div>
     </div>
   );
