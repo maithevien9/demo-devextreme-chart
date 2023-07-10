@@ -1,12 +1,15 @@
+import ReactEcharts from 'echarts-for-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { DndProvider, useDrag } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import './App.css';
 import lastData from './lastData.json';
 import paramsData from './params.json';
 import paramsData2 from './params2.json';
-
-import { useState, useEffect } from 'react';
-import ReactEcharts from 'echarts-for-react';
-
-import React, { useRef } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Ruler from './Ruler';
+import ComponentA from './DroppableContainer';
+import echarts from 'echarts';
 
 const bc = new BroadcastChannel('my-awesome-site');
 
@@ -43,8 +46,13 @@ function Home() {
   }, []);
 
   const xAxis = lastData.map((item) => item.frame);
+  const xAxis2 = lastData.map((item) => item.time);
+
   const newXAxis = [...xAxis, ...xAxis, ...xAxis, ...xAxis, ...xAxis];
+  const newXAxis2 = [...xAxis2, ...xAxis2, ...xAxis2, ...xAxis2, ...xAxis2];
+
   const options = {
+    grid: { show: false },
     toolbox: {
       feature: {
         dataZoom: {
@@ -56,18 +64,48 @@ function Home() {
         restore: {},
       },
     },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: newXAxis,
-    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: newXAxis,
+        splitLine: {
+          show: true,
+        },
+      },
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: newXAxis2,
+        splitLine: {
+          show: false,
+        },
+        offset: 0,
+      },
+    ],
     yAxis: {
       type: 'value',
+      offset: 20,
+      splitLine: {
+        show: false,
+      },
     },
 
     series: paramsData.slice(0, 2).map((item) => ({ ...item, showSymbol: false })),
 
     dataZoom: [
+      // {
+      //   type: 'slider',
+      //   show: true,
+      //   yAxisIndex: 0, // Index of the yAxis to apply dataZoom
+      //   top: '20%', // Position from the top edge of the chart
+      //   start: 0, // Initial range start
+      //   end: 100, // Initial range end
+      //   handleSize: '100%', // Size of the handle
+      //   handleStyle: {
+      //     color: '#ddd', // Color of the handle
+      //   },
+      // },
       {
         type: 'slider',
         showDetail: false,
@@ -118,7 +156,26 @@ function Home() {
   return (
     <div>
       <div>Zoom Level: {100 - zoomRatio}%</div>
-      <ReactEcharts option={options} style={{ height: 500 }} ref={chartRef} />
+
+      <div>
+        <ReactEcharts option={options} style={{ height: 500, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
+      </div>
+
+      <div
+        style={{
+          width: 400,
+          height: 500,
+          display: 'flex',
+          justifyContent: 'flex-start',
+          paddingLeft: 80,
+          position: 'absolute',
+          top: 100,
+          left: 0,
+          paddingTop: 50,
+        }}
+      >
+        {/* <ComponentA /> */}
+      </div>
     </div>
   );
 }
@@ -230,16 +287,17 @@ function About() {
   );
 }
 
-export default function App() {
+function App() {
   useEffect(() => {
     bc.onmessage = (event) => {
       if (event.data === 'Event') {
-        alert('oke');
+        // console.log('check');
       }
     };
   }, []);
 
   return (
+    // <DndProvider backend={HTML5Backend}>
     <Router>
       <div>
         <ul>
@@ -251,7 +309,16 @@ export default function App() {
           </li>
         </ul>
 
-        {/* <button onClick={() => bc.postMessage('Event')}>Trigger</button> */}
+        {/* <button
+          onClick={() => {
+            // bc.postMessage('Event');
+            var win = window.open('about:blank', '_self');
+            win.close();
+            bc.postMessage('Event');
+          }}
+        >
+          Trigger
+        </button> */}
 
         <hr />
 
@@ -267,3 +334,5 @@ export default function App() {
     </Router>
   );
 }
+
+export default App;
