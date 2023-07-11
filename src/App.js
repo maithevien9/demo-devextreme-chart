@@ -220,7 +220,9 @@ function Home() {
 
   return (
     <div>
-      <div>Zoom Level: {(100 * 100) / zoomRatio}%</div>
+      <div>
+        Zoom Level: {Math.round((100 * 100) / zoomRatio)}% - {Math.round(zoomRatio)}
+      </div>
 
       <Wrapper selectedFrame={selectedFrame} start={start} end={end} position={position || -20}>
         <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
