@@ -1,16 +1,13 @@
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { DndProvider, useDrag } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import styled from 'styled-components';
 import './App.css';
+import ComponentA from './DroppableContainer';
+import ChatIcon from './imgs/chat.png';
 import lastData from './lastData.json';
 import paramsData from './params.json';
 import paramsData2 from './params2.json';
-import Ruler from './Ruler';
-import ComponentA from './DroppableContainer';
-import echarts from 'echarts';
-import styled from 'styled-components';
 
 const Wrapper = styled.div`
   ${({ selectedFrame, start, end, position }) =>
@@ -27,6 +24,7 @@ function Home() {
   const [dataZoomEnabled, setDataZoomEnabled] = useState(false);
   const [zoomRatio, setZoomRatio] = useState(100);
   const [selectedFrame, setSelectedFrame] = useState(0);
+  const isGroupRef = useRef(false);
 
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(100);
@@ -58,6 +56,51 @@ function Home() {
       chartInstance.off('restore', handleReStore);
     };
   }, []);
+
+  useEffect(() => {
+    if (zoomRatio > 50) {
+      if (!isGroupRef.current) {
+        const chartInstance = chartRef.current.getEchartsInstance();
+        const updatedOption = chartInstance.getOption();
+
+        updatedOption.series = updatedOption.series.map((item) => ({
+          ...item,
+          markPoint: {
+            data: [
+              {
+                name: 'Custom',
+                coord: ['21632-4', 2000],
+                label: { show: true, formatter: '2' },
+                symbolOffset: [10, -16],
+                itemStyle: {
+                  color: '#FF6700',
+                },
+              }, // Mark a custom data point
+            ],
+          },
+        }));
+        chartInstance.setOption(updatedOption);
+      }
+      isGroupRef.current = true;
+    } else {
+      if (isGroupRef.current) {
+        const chartInstance = chartRef.current.getEchartsInstance();
+        const updatedOption = chartInstance.getOption();
+
+        updatedOption.series = updatedOption.series.map((item) => ({
+          ...item,
+          markPoint: {
+            data: [
+              { name: 'Custom', coord: ['21632-4', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 3000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+            ],
+          },
+        }));
+        chartInstance.setOption(updatedOption);
+      }
+      isGroupRef.current = false;
+    }
+  }, [zoomRatio]);
 
   const xAxis = lastData.map((item) => item.frame);
   const xAxis2 = lastData.map((item) => item.time);
@@ -112,7 +155,20 @@ function Home() {
       show: false,
     },
 
-    series: paramsData.slice(0, 2).map((item) => ({ ...item, showSymbol: false })),
+    series: paramsData.slice(0, 2).map((item, index) => ({
+      ...item,
+      showSymbol: true,
+      data: item.data.map((i) => ({ value: i, symbol: 'none' })),
+      markPoint:
+        index === 0
+          ? {
+              data: [
+                { name: 'Custom', coord: ['21632-4', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+                { name: 'Custom', coord: ['21632-4', 3000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              ],
+            }
+          : null,
+    })),
 
     dataZoom: [
       {
@@ -164,7 +220,7 @@ function Home() {
 
   return (
     <div>
-      <div>Zoom Level: {100 - zoomRatio}%</div>
+      <div>Zoom Level: {(100 * 100) / zoomRatio}%</div>
 
       <Wrapper selectedFrame={selectedFrame} start={start} end={end} position={position || -20}>
         <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
