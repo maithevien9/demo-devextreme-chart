@@ -42,6 +42,35 @@ function Home() {
       setZoomRatio(100);
     };
 
+    const handleClick = (params) => {
+      if (params.componentType === 'markPoint' && params.color === '#FF6700') {
+        const chart = chartRef.current.getEchartsInstance();
+        const option = chart.getOption();
+
+        setZoomRatio(84.97799768765375 - 84.92482075545784);
+        const updatedOptions = {
+          ...option,
+          dataZoom: [
+            {
+              type: 'inside',
+              start: 84.92482075545784,
+              end: 84.97799768765375,
+              showDetail: false,
+              zoomLock: false,
+              brushSelect: false,
+            },
+            {
+              type: 'slider',
+            },
+          ],
+        };
+
+        // Update the chart options using setOption
+        chart.setOption(updatedOptions);
+      }
+      //
+    };
+
     // Call getZoomRatio initially
     getZoomRatio();
 
@@ -49,11 +78,13 @@ function Home() {
     const chartInstance = chartRef.current.getEchartsInstance();
     chartInstance.on('dataZoom', getZoomRatio);
     chartInstance.on('restore', handleReStore);
+    chartInstance.on('click', handleClick);
 
     // Cleanup function to detach the event listener
     return () => {
       chartInstance.off('dataZoom', getZoomRatio);
       chartInstance.off('restore', handleReStore);
+      chartInstance.off('click', handleClick);
     };
   }, []);
 
