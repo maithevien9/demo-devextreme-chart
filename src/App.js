@@ -195,8 +195,15 @@ function Home() {
         index === 0
           ? {
               data: [
-                { name: 'Custom', coord: ['21632-4', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
-                { name: 'Custom', coord: ['21632-4', 3000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+                {
+                  name: 'Custom',
+                  coord: ['21632-4', 2000],
+                  label: { show: true, formatter: '2' },
+                  symbolOffset: [10, -16],
+                  itemStyle: {
+                    color: '#FF6700',
+                  },
+                }, // Mark a custom data point
               ],
             }
           : null,
