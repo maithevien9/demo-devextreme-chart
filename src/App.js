@@ -36,6 +36,7 @@ function Home() {
       const chart = chartRef.current.getEchartsInstance();
       const option = chart.getOption();
       const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
+      console.log(option.dataZoom[0].end, option.dataZoom[0].start);
       setZoomRatio(newZoomRatio);
     };
 
@@ -45,17 +46,21 @@ function Home() {
 
     const handleClick = (params) => {
       if (params.componentType === 'markPoint' && params.color === '#FF6700') {
+        console.log(params.data.coord[0]);
         const chart = chartRef.current.getEchartsInstance();
         const option = chart.getOption();
+        const index = option.xAxis[0].data.findIndex((item) => item === params.data.coord[0]);
+        const max = option.xAxis[0].data.length;
+        const percent = (100 * index) / max;
 
-        setZoomRatio(84.97799768765375 - 84.92482075545784);
+        setZoomRatio(0.2);
         const updatedOptions = {
           ...option,
           dataZoom: [
             {
               type: 'inside',
-              start: 84.92482075545784,
-              end: 84.97799768765375,
+              start: percent - 0.1,
+              end: percent + 0.1,
               showDetail: false,
               zoomLock: false,
               brushSelect: false,
@@ -101,17 +106,26 @@ function Home() {
             data: [
               {
                 name: 'Custom',
-                coord: ['21632-4', 2000],
-                label: { show: true, formatter: '2' },
+                coord: ['21591-3', 2000],
+                label: { show: true, formatter: '5' },
                 symbolOffset: [10, -16],
                 itemStyle: {
                   color: '#FF6700',
                 },
-              }, // Mark a custom data point
+              },
+              {
+                name: 'Custom2',
+                coord: ['21632-4', 2000],
+                label: { show: true, formatter: '5' },
+                symbolOffset: [10, -16],
+                itemStyle: {
+                  color: '#FF6700',
+                },
+              },
             ],
           },
         }));
-        chartInstance.setOption(updatedOption);
+        // chartInstance.setOption(updatedOption);
       }
       isGroupRef.current = true;
     } else {
@@ -125,6 +139,15 @@ function Home() {
             data: [
               { name: 'Custom', coord: ['21632-4', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
               { name: 'Custom', coord: ['21632-4', 3000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 6000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 9000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 7000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+
+              { name: 'Custom', coord: ['21591-3', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 2000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 5000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 8000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
             ],
           },
         }));
@@ -137,8 +160,8 @@ function Home() {
   const xAxis = lastData.map((item) => item.frame);
   const xAxis2 = lastData.map((item) => item.time);
 
-  const newXAxis = [...xAxis, ...xAxis, ...xAxis, ...xAxis, ...xAxis];
-  const newXAxis2 = [...xAxis2, ...xAxis2, ...xAxis2, ...xAxis2, ...xAxis2];
+  const newXAxis = [...xAxis];
+  const newXAxis2 = [...xAxis2];
 
   const options = {
     grid: { show: false },
@@ -197,13 +220,22 @@ function Home() {
               data: [
                 {
                   name: 'Custom',
-                  coord: ['21632-4', 2000],
-                  label: { show: true, formatter: '2' },
+                  coord: ['21591-3', 2000],
+                  label: { show: true, formatter: '5' },
                   symbolOffset: [10, -16],
                   itemStyle: {
                     color: '#FF6700',
                   },
-                }, // Mark a custom data point
+                },
+                {
+                  name: 'Custom2',
+                  coord: ['21632-4', 2000],
+                  label: { show: true, formatter: '5' },
+                  symbolOffset: [10, -16],
+                  itemStyle: {
+                    color: '#FF6700',
+                  },
+                },
               ],
             }
           : null,
