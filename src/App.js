@@ -6,8 +6,9 @@ import './App.css';
 import ComponentA from './DroppableContainer';
 import ChatIcon from './imgs/chat.png';
 import lastData from './lastData.json';
-import paramsData from './params.json';
+import paramsData from './params1.json';
 import paramsData2 from './params2.json';
+import Chart3 from './components/charts3';
 
 const Wrapper = styled.div`
   ${({ selectedFrame, start, end, position }) =>
@@ -405,6 +406,9 @@ function App() {
           <li>
             <Link to='/demo2'>Demo 2</Link>
           </li>
+          <li>
+            <Link to='/demo3'>Demo 3</Link>
+          </li>
         </ul>
 
         {/* <button
@@ -426,6 +430,9 @@ function App() {
           </Route>
           <Route path='/demo2'>
             <About />
+          </Route>
+          <Route path='/demo3'>
+            <Chart3 />
           </Route>
         </Switch>
       </div>
