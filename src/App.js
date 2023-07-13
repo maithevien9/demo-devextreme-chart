@@ -58,15 +58,15 @@ function Home() {
           ...option,
           dataZoom: [
             {
-              type: 'inside',
-              start: percent - 0.02,
-              end: percent + 0.02,
+              type: 'slider',
               showDetail: false,
               zoomLock: false,
               brushSelect: false,
+              start: percent - 0.02,
+              end: percent + 0.02,
             },
             {
-              type: 'slider',
+              type: 'inside',
             },
           ],
         };
