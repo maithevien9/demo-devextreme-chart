@@ -36,7 +36,7 @@ function Home() {
       const chart = chartRef.current.getEchartsInstance();
       const option = chart.getOption();
       const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
-      console.log(option.dataZoom[0].end, option.dataZoom[0].start);
+
       setZoomRatio(newZoomRatio);
     };
 
@@ -46,7 +46,6 @@ function Home() {
 
     const handleClick = (params) => {
       if (params.componentType === 'markPoint' && params.color === '#FF6700') {
-        console.log(params.data.coord[0]);
         const chart = chartRef.current.getEchartsInstance();
         const option = chart.getOption();
         const index = option.xAxis[0].data.findIndex((item) => item === params.data.coord[0]);
@@ -54,6 +53,7 @@ function Home() {
         const percent = (100 * index) / max;
 
         setZoomRatio(0.2);
+
         const updatedOptions = {
           ...option,
           dataZoom: [
@@ -100,6 +100,7 @@ function Home() {
         const chartInstance = chartRef.current.getEchartsInstance();
         const updatedOption = chartInstance.getOption();
 
+        console.log('check');
         updatedOption.series = updatedOption.series.map((item) => ({
           ...item,
           markPoint: {
@@ -125,7 +126,7 @@ function Home() {
             ],
           },
         }));
-        // chartInstance.setOption(updatedOption);
+        chartInstance.setOption(updatedOption);
       }
       isGroupRef.current = true;
     } else {
@@ -138,16 +139,46 @@ function Home() {
           markPoint: {
             data: [
               { name: 'Custom', coord: ['21632-4', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 2000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
               { name: 'Custom', coord: ['21632-4', 3000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 4000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 5000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
               { name: 'Custom', coord: ['21632-4', 6000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
-              { name: 'Custom', coord: ['21632-4', 9000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
               { name: 'Custom', coord: ['21632-4', 7000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 8000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 9000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 10000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 11000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 12000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 13000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 14000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 15000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 16000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 1700], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 18000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 19000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21632-4', 20000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
 
               { name: 'Custom', coord: ['21591-3', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
               { name: 'Custom', coord: ['21591-3', 2000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
-              { name: 'Custom', coord: ['21591-3', 5000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 3000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 4000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 500], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 6000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 7000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
               { name: 'Custom', coord: ['21591-3', 8000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
-              { name: 'Custom', coord: ['21591-3', 1000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 9000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 10000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 11000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 12000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 13000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 14000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 1500], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 16000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 17000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 18000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 19000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
+              { name: 'Custom', coord: ['21591-3', 20000], symbol: `image://${ChatIcon}`, symbolSize: 20, symbolOffset: [10, -16] }, // Mark a custom data point
             ],
           },
         }));
