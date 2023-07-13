@@ -52,15 +52,15 @@ function Home() {
         const max = option.xAxis[0].data.length;
         const percent = (100 * index) / max;
 
-        setZoomRatio(0.2);
+        setZoomRatio(0.04);
 
         const updatedOptions = {
           ...option,
           dataZoom: [
             {
               type: 'inside',
-              start: percent - 0.1,
-              end: percent + 0.1,
+              start: percent - 0.02,
+              end: percent + 0.02,
               showDetail: false,
               zoomLock: false,
               brushSelect: false,
