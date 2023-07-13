@@ -108,7 +108,7 @@ function Home() {
               {
                 name: 'Custom',
                 coord: ['21591-3', 2000],
-                label: { show: true, formatter: '5' },
+                label: { show: true, formatter: '20' },
                 symbolOffset: [10, -16],
                 itemStyle: {
                   color: '#FF6700',
@@ -117,7 +117,7 @@ function Home() {
               {
                 name: 'Custom2',
                 coord: ['21632-4', 2000],
-                label: { show: true, formatter: '5' },
+                label: { show: true, formatter: '20' },
                 symbolOffset: [10, -16],
                 itemStyle: {
                   color: '#FF6700',
@@ -252,7 +252,7 @@ function Home() {
                 {
                   name: 'Custom',
                   coord: ['21591-3', 2000],
-                  label: { show: true, formatter: '5' },
+                  label: { show: true, formatter: '20' },
                   symbolOffset: [10, -16],
                   itemStyle: {
                     color: '#FF6700',
@@ -261,7 +261,7 @@ function Home() {
                 {
                   name: 'Custom2',
                   coord: ['21632-4', 2000],
-                  label: { show: true, formatter: '5' },
+                  label: { show: true, formatter: '20' },
                   symbolOffset: [10, -16],
                   itemStyle: {
                     color: '#FF6700',
