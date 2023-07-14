@@ -8,6 +8,8 @@ import ChatIcon from './imgs/chat.png';
 import lastData from './lastData.json';
 import paramsData from './params1.json';
 import paramsData2 from './params2.json';
+
+// import paramsData from './params30h.json';
 import Chart3 from './components/charts3';
 
 const Wrapper = styled.div`
@@ -26,57 +28,73 @@ function Home() {
   const [zoomRatio, setZoomRatio] = useState(100);
   const [selectedFrame, setSelectedFrame] = useState(0);
   const isGroupRef = useRef(false);
+  const [hour, setHour] = useState(20);
+  const [loading, setLoading] = useState(false);
 
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(100);
   const [position, setPosition] = useState(0);
 
-  useEffect(() => {
-    const getZoomRatio = () => {
+  const getZoomRatio = () => {
+    const chart = chartRef.current.getEchartsInstance();
+    const option = chart.getOption();
+    const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
+
+    setZoomRatio(newZoomRatio);
+  };
+
+  const handleReStore = () => {
+    setZoomRatio(100);
+  };
+
+  // console.log(
+  //   JSON.stringify(
+  // paramsData.map((item) => ({
+  //   ...item,
+  //   data: new Array(15)
+  //     .fill(null)
+  //     .map((item2) => [...item.data])
+  //     .flat(),
+  // }))
+  //   )
+  // );
+
+  const handleClick = (params) => {
+    console.log({ params });
+
+    if (params.componentType === 'markPoint' && params.color === '#FF6700') {
       const chart = chartRef.current.getEchartsInstance();
       const option = chart.getOption();
-      const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
+      const index = option.xAxis[0].data.findIndex((item) => item === params.data.coord[0]);
+      const max = option.xAxis[0].data.length;
+      const percent = (100 * index) / max;
 
-      setZoomRatio(newZoomRatio);
-    };
+      setZoomRatio(0.04);
 
-    const handleReStore = () => {
-      setZoomRatio(100);
-    };
+      const updatedOptions = {
+        ...option,
+        dataZoom: [
+          {
+            type: 'slider',
+            showDetail: false,
+            zoomLock: false,
+            brushSelect: false,
+            start: percent - 0.02,
+            end: percent + 0.02,
+          },
+          {
+            type: 'inside',
+          },
+        ],
+      };
 
-    const handleClick = (params) => {
-      if (params.componentType === 'markPoint' && params.color === '#FF6700') {
-        const chart = chartRef.current.getEchartsInstance();
-        const option = chart.getOption();
-        const index = option.xAxis[0].data.findIndex((item) => item === params.data.coord[0]);
-        const max = option.xAxis[0].data.length;
-        const percent = (100 * index) / max;
+      // Update the chart options using setOption
+      chart.setOption(updatedOptions);
+    }
+    //
+  };
 
-        setZoomRatio(0.04);
-
-        const updatedOptions = {
-          ...option,
-          dataZoom: [
-            {
-              type: 'slider',
-              showDetail: false,
-              zoomLock: false,
-              brushSelect: false,
-              start: percent - 0.02,
-              end: percent + 0.02,
-            },
-            {
-              type: 'inside',
-            },
-          ],
-        };
-
-        // Update the chart options using setOption
-        chart.setOption(updatedOptions);
-      }
-      //
-    };
-
+  useEffect(() => {
     // Call getZoomRatio initially
     getZoomRatio();
 
@@ -92,7 +110,7 @@ function Home() {
       chartInstance.off('restore', handleReStore);
       chartInstance.off('click', handleClick);
     };
-  }, []);
+  }, [chartRef]);
 
   useEffect(() => {
     if (zoomRatio > 50) {
@@ -100,7 +118,6 @@ function Home() {
         const chartInstance = chartRef.current.getEchartsInstance();
         const updatedOption = chartInstance.getOption();
 
-        console.log('check');
         updatedOption.series = updatedOption.series.map((item) => ({
           ...item,
           markPoint: {
@@ -191,8 +208,23 @@ function Home() {
   const xAxis = lastData.map((item) => item.frame);
   const xAxis2 = lastData.map((item) => item.time);
 
-  const newXAxis = [...xAxis];
-  const newXAxis2 = [...xAxis2];
+  const customXAxisX = xAxis.map((item, index) => `${item}_${index}`);
+
+  const newXAxis = [
+    ...xAxis,
+    ...new Array(hour / 2 - 1)
+      .fill(null)
+      .map((item2) => customXAxisX)
+      .flat(),
+  ];
+
+  const newXAxis2 = [
+    ...xAxis2,
+    ...new Array(hour / 2 - 1)
+      .fill(null)
+      .map((item2) => xAxis2)
+      .flat(),
+  ];
 
   const options = {
     grid: { show: false },
@@ -244,7 +276,13 @@ function Home() {
     series: paramsData.slice(0, 2).map((item, index) => ({
       ...item,
       showSymbol: true,
-      data: item.data.map((i) => ({ value: i, symbol: 'none' })),
+      data: new Array(hour / 2)
+        .fill(null)
+        .map((item2) => {
+          return item.data;
+        })
+        .flat()
+        .map((i) => ({ value: i, symbol: 'none' })),
       markPoint:
         index === 0
           ? {
@@ -326,9 +364,13 @@ function Home() {
         Zoom Level: {Math.round((100 * 100) / zoomRatio)}% - {Math.round(zoomRatio)}
       </div>
 
-      <Wrapper selectedFrame={selectedFrame} start={start} end={end} position={position || -20}>
-        <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
-      </Wrapper>
+      {loading ? (
+        <div style={{ height: 540, paddingLeft: 50, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading</div>
+      ) : (
+        <Wrapper selectedFrame={selectedFrame} start={start} end={end} position={position || -20}>
+          <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} />
+        </Wrapper>
+      )}
 
       <div
         style={{
@@ -338,13 +380,44 @@ function Home() {
           justifyContent: 'flex-start',
           paddingLeft: 80,
           position: 'absolute',
-          top: 110,
+          top: 130,
           left: 0,
           paddingTop: 50,
         }}
       >
         <ComponentA start={start} end={end} setStart={setStart} setEnd={setEnd} position={position} setPosition={setPosition} />
       </div>
+
+      {/* <select
+        name='Time'
+        id='time'
+        value={hour}
+        onChange={(e) => {
+          setHour(e.target.value);
+          setLoading(true);
+
+          setTimeout(() => {
+            setLoading(false);
+          }, 0);
+        }}
+        style={{ width: 200, height: 50, paddingLeft: 20, paddingRight: 20 }}
+      >
+        <option value='2'>2</option>
+        <option value='4'>4</option>
+        <option value='6'>6</option>
+        <option value='8'>8</option>
+        <option value='10'>10</option>
+        <option value='12'>12</option>
+        <option value='14'>14</option>
+        <option value='16'>16</option>
+        <option value='18'>18</option>
+        <option value='20'>20</option>
+        <option value='22'>22</option>
+        <option value='24'>24</option>
+        <option value='26'>26</option>
+        <option value='28'>28</option>
+        <option value='30'>30</option>
+      </select> */}
     </div>
   );
 }
