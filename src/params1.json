@@ -10,6 +10,8 @@
     "name": "Altitude",
     "type": "line",
     "stack": "Total",
+    "color": ["black"],
+    "lineStyle": { "lineStyle": "#000000" },
     "markLine": { "itemStyle": { "color": "rgba(255, 173, 177, 0.4)" }, "label": { "formatter": "{b}" }, "data": [{ "xAxis": "21632-3" }] },
     "data": [
       210,
