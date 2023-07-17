@@ -1,6 +1,13 @@
 [
   {
-    "name": "Altitude (Pressure)",
+    "name": "No Altitude",
+    "type": "line",
+    "stack": "Total",
+    "markLine": { "itemStyle": { "color": "rgba(255, 173, 177, 0.4)" }, "label": { "formatter": "{b}" }, "data": [{ "xAxis": "21632-3" }] },
+    "data": []
+  },
+  {
+    "name": "Altitude",
     "type": "line",
     "stack": "Total",
     "markLine": { "itemStyle": { "color": "rgba(255, 173, 177, 0.4)" }, "label": { "formatter": "{b}" }, "data": [{ "xAxis": "21632-3" }] },
