@@ -8,6 +8,8 @@ import paramsData2 from './params2.json';
 
 // import paramsData from './params30h.json';
 import Chart3 from './components/charts3';
+import Chart4 from './components/chart4';
+import Chart5 from './components/chart5';
 
 const bc = new BroadcastChannel('my-awesome-site');
 
@@ -133,13 +135,21 @@ function App() {
       <div>
         <ul>
           <li>
-            <Link to='/'>Demo 1</Link>
+            <Link to='/'>Overlay</Link>
           </li>
           <li>
-            <Link to='/demo2'>Demo 2</Link>
+            <Link to='/demo2'>Stack</Link>
           </li>
           <li>
-            <Link to='/demo3'>Demo 3</Link>
+            <Link to='/demo3'>Overlay with timer</Link>
+          </li>
+
+          <li>
+            <Link to='/demo4'>Overlay has Altitude</Link>
+          </li>
+
+          <li>
+            <Link to='/demo5'>Overlay without Altitude</Link>
           </li>
         </ul>
 
@@ -165,6 +175,12 @@ function App() {
           </Route>
           <Route path='/demo3'>
             <Chart3 />
+          </Route>
+          <Route path='/demo4'>
+            <Chart4 />
+          </Route>
+          <Route path='/demo5'>
+            <Chart5 />
           </Route>
         </Switch>
       </div>

@@ -2,8 +2,7 @@ import ReactEcharts from 'echarts-for-react';
 import React, { useRef, useState } from 'react';
 import '../App.css';
 import lastData from '../lastData.json';
-import paramsData from '../paramsHasAltitude.json';
-import paramsWithoutAltitude from '../paramsWithoutAltitude.json';
+import paramsData from '../paramsWithoutAltitude.json';
 
 export default function Home() {
   const chartRef = useRef(null);
