@@ -8,8 +8,7 @@ import paramsData2 from './params2.json';
 
 // import paramsData from './params30h.json';
 import Chart3 from './components/charts3';
-import Chart4 from './components/chart4';
-import Chart5 from './components/chart5';
+import CheckAltitude from './components/checkAltitude.js';
 
 const bc = new BroadcastChannel('my-awesome-site');
 
@@ -145,11 +144,7 @@ function App() {
           </li>
 
           <li>
-            <Link to='/demo4'>Overlay has Altitude</Link>
-          </li>
-
-          <li>
-            <Link to='/demo5'>Overlay without Altitude</Link>
+            <Link to='/demo4'>Check Altitude</Link>
           </li>
         </ul>
 
@@ -177,10 +172,7 @@ function App() {
             <Chart3 />
           </Route>
           <Route path='/demo4'>
-            <Chart4 />
-          </Route>
-          <Route path='/demo5'>
-            <Chart5 />
+            <CheckAltitude />
           </Route>
         </Switch>
       </div>
