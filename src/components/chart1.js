@@ -10,9 +10,9 @@ import paramsData from '../params1.json';
 // import paramsData from './params30h.json';
 
 const Wrapper = styled.div`
-  ${({ selectedFrame, start, end, position }) =>
+  /* ${({ selectedFrame, start, end, position }) =>
     selectedFrame !== null &&
-    `[clip-path="url(#zr0-c${1})"] {transform: translate(0%, ${2 + (position * 100) / 500}%) scale(1, ${(end - start) / 100}); }`}
+    `[clip-path="url(#zr0-c${1})"] {transform: translate(0%, ${2 + (position * 100) / 500}%) scale(1, ${(end - start) / 100}); }`} */
 `;
 
 const bc = new BroadcastChannel('my-awesome-site');
