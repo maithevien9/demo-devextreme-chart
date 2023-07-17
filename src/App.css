@@ -237,3 +237,8 @@
   background-repeat: no-repeat;
   background-size: contain;
 }
+
+.row {
+  display: flex;
+  gap: 10
+}

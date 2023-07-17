@@ -3,6 +3,13 @@ import React, { useRef, useState } from 'react';
 import '../App.css';
 import lastData from '../lastData.json';
 import paramsData from '../paramsWithoutAltitude.json';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  [clip-path='url(#zr1-c0)'] {
+    display: none !important;
+  }
+`;
 
 export default function Home() {
   const chartRef = useRef(null);
@@ -50,6 +57,20 @@ export default function Home() {
       trigger: 'axis',
       axisPointer: {
         animation: false,
+      },
+      formatter: function (params) {
+        var customContent = '<div>';
+
+        params.forEach((item) => {
+          if (item.seriesName !== 'Pitch Attitude') {
+            customContent += `<div class="row"> <p>` + item.seriesName + '</p>';
+            customContent += '<p>' + item.value + '</p> </div>';
+          }
+        });
+
+        customContent += '</div>';
+
+        return customContent;
       },
     },
     toolbox: {
@@ -111,6 +132,8 @@ export default function Home() {
   };
 
   return (
-    <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} key={chartKey} />
+    <Wrapper>
+      <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} key={chartKey} />
+    </Wrapper>
   );
 }
