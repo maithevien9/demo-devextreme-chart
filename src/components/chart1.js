@@ -248,6 +248,12 @@ export default function Home() {
 
   const options = {
     grid: { show: false },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false,
+      },
+    },
     toolbox: {
       feature: {
         dataZoom: {
