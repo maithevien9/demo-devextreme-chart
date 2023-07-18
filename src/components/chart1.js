@@ -47,12 +47,7 @@ export default function Home() {
 
   const options = {
     grid: { show: false },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        animation: false,
-      },
-    },
+
     toolbox: {
       feature: {
         dataZoom: {
@@ -68,13 +63,27 @@ export default function Home() {
       {
         type: 'category',
         data: newXAxis,
-        splitLine: {
+        boundaryGap: false,
+        axisPointer: {
           show: true,
+          lineStyle: {
+            color: '#FF6700', // Customize the color of the split lines
+            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
+            // ... other lineStyle options
+          },
+        },
+        splitLine: {
+          show: true, // Set to false to hide the default split lines
+          lineStyle: {
+            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
+            // ... other lineStyle options
+          },
         },
         offset: 5,
       },
       {
         // type: 'category',
+        boundaryGap: false,
         data: newXAxis2,
         splitLine: {
           show: false,
