@@ -287,7 +287,7 @@ export default function Home() {
                         </Radio>
 
                         <Radio value={3}>Frames on Screen</Radio>
-                        <Radio value={4}>All frame</Radio>
+                        <Radio value={4}>All frames</Radio>
                       </Space>
                     </Radio.Group>
                   </Form.Item>
