@@ -299,6 +299,10 @@ export default function Home() {
                     <Input style={{ width: 200 }} disabled={!checked} />
                     Page
                   </div>
+
+                  <h3 style={{ marginTop: 200 }}>
+                    Note: Ensure a perfect printout by choosing the correct printing area. Take a moment to verify before you proceed!
+                  </h3>
                 </div>
               </div>
             </Form>
