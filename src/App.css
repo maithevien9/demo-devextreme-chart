@@ -242,3 +242,42 @@
   display: flex;
   gap: 10
 }
+
+@media screen {
+  #printSection {
+    display: none;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #root {
+    display: none;
+  }
+
+  #printSection,
+  #printSection * {
+    visibility: visible;
+  }
+
+  #printSection {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  @page {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.ant-radio-wrapper>span {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
