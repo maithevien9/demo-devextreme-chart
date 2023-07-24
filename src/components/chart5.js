@@ -6,6 +6,9 @@ import paramsData from '../paramsWithoutAltitude.json';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
+  [clip-path='url(#zr2-c0)'] {
+    display: none !important;
+  }
   [clip-path='url(#zr1-c0)'] {
     display: none !important;
   }
