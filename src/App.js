@@ -1,5 +1,5 @@
 import ReactEcharts from 'echarts-for-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Home from './components/chart1';
@@ -9,22 +9,115 @@ import paramsData2 from './params2.json';
 // import paramsData from './params30h.json';
 import Chart3 from './components/charts3';
 import CheckAltitude from './components/checkAltitude.js';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  [fill='black'] {
+    background: red !important;
+    color: blue !important;
+  }
+`;
 
 const bc = new BroadcastChannel('my-awesome-site');
 
 function About() {
   const [startValue, setStartValue] = useState(0);
   const [endValue, setEndValue] = useState(9);
+  const chartRef = useRef(null);
 
   const newArr = paramsData2.slice(startValue, endValue);
 
-  const options2 = {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        animation: false,
+  const handleChartClick = (params) => {
+    if (params.componentType === 'markLine') {
+      const chart = chartRef.current.getEchartsInstance();
+      const option = chart.getOption();
+      const index = option.xAxis[0].data.findIndex((item) => item === params.data.coord[0]);
+      const max = option.xAxis[0].data.length;
+      const percent = (100 * index) / max;
+
+      const updatedOptions = {
+        ...option,
+        dataZoom: [
+          {
+            type: 'slider',
+            showDetail: false,
+            zoomLock: false,
+            brushSelect: false,
+            start: percent - 0.02,
+            end: percent + 0.02,
+          },
+          {
+            type: 'inside',
+          },
+        ],
+      };
+
+      // Update the chart options using setOption
+      chart.setOption(updatedOptions);
+    }
+  };
+
+  React.useEffect(() => {
+    const chartInstance = chartRef.current.getEchartsInstance();
+
+    // Add the click event listener to the chart instance
+    chartInstance.on('click', handleChartClick);
+
+    // Clean up the chart instance on unmount
+    return () => {
+      chartInstance.off('click', handleChartClick);
+    };
+  }, []);
+
+  const series = newArr.map((item, index) => ({
+    ...item,
+    xAxisIndex: index,
+    yAxisIndex: index,
+    showSymbol: false,
+    markLine: {
+      data:
+        index === 8
+          ? [
+              {
+                label: {
+                  formatter: '{b}',
+                  backgroundColor: 'black',
+                  borderRadius: 100,
+                  color: 'black',
+                  width: 10,
+                  height: 10,
+                  position: 'start',
+                  distance: 20,
+                },
+                name: 'ii',
+                xAxis: '21632-3',
+              },
+              {
+                label: {
+                  formatter: '{b}',
+                  backgroundColor: 'red',
+                  borderRadius: 100,
+                  color: 'red',
+                  width: 10,
+                  height: 10,
+                  position: 'start',
+                  distance: 20,
+                },
+                name: 'ii',
+                xAxis: '21232-3',
+              },
+            ]
+          : [],
+      lineStyle: {
+        color: 'white',
+      },
+      label: {
+        distance: 20,
       },
     },
+  }));
+
+  const options2 = {
     toolbox: {
       feature: {
         dataZoom: {
@@ -69,30 +162,99 @@ function About() {
       return { height: 150, top: 10 };
     }),
     xAxis: newArr.map((item, index) => {
-      if (index) {
-        return {
-          gridIndex: index,
-          type: 'category',
-          boundaryGap: false,
-          axisLine: { onZero: true },
-          data: lastData.map((item) => item.frame),
-        };
-      }
-      return { type: 'category', boundaryGap: false, axisLine: { onZero: true }, data: lastData.map((item) => item.frame) };
+      // if (index) {
+      return {
+        gridIndex: index,
+        boundaryGap: false,
+        axisLine: { onZero: true },
+        data: lastData.map((item) => item.frame),
+        type: 'category',
+        axisLabel: {
+          color: index === 8 ? 'black' : 'white',
+        },
+        axisPointer: {
+          show: true,
+          lineStyle: {
+            color: '#FF6700', // Customize the color of the split lines
+            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
+            // ... other lineStyle options
+          },
+        },
+        splitLine: {
+          show: true, // Set to false to hide the default split lines
+          lineStyle: {
+            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
+            // ... other lineStyle options
+          },
+        },
+        offset: 0,
+      };
     }),
 
     yAxis: newArr.map((item, index) => {
-      if (index) {
-        return { type: 'value', gridIndex: index };
-      }
-      return { type: 'value', max: 500 };
+      return {
+        type: 'value',
+        gridIndex: index,
+        offset: 20,
+        splitLine: {
+          show: false,
+        },
+        show: false,
+      };
     }),
-    series: newArr.map((item, index) => ({ ...item, symbolSize: 8, xAxisIndex: index, yAxisIndex: index })),
+    series,
+  };
+
+  const option3 = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      boundaryGap: false,
+      splitLine: {
+        show: false,
+      },
+      offset: 10,
+      axisTick: {
+        show: false, // Hide the xAxis tick line
+      },
+      axisLine: {
+        show: false, // Hide the xAxis line
+      },
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        data: [150, 230, 224, null, 135, 147, 260],
+        type: 'line',
+        markLine: {
+          lineStyle: {
+            color: 'white',
+          },
+
+          label: {
+            formatter: '{b}',
+            backgroundColor: 'black',
+            borderRadius: 100,
+            color: 'black',
+            width: 20,
+            height: 20,
+          },
+          data: [
+            {
+              name: 'ii',
+              xAxis: 'Thu',
+            },
+          ],
+        },
+      },
+    ],
   };
 
   return (
-    <div>
-      <ReactEcharts option={options2} style={{ height: 200 * newArr.length }} />
+    <Wrapper>
+      <ReactEcharts option={options2} style={{ height: 200 * newArr.length }} opts={{ renderer: 'svg' }} ref={chartRef} />
       <div style={{ margin: 20, display: 'flex', gap: 20, marginLeft: 300 }}>
         <button
           onClick={() => {
@@ -115,7 +277,7 @@ function About() {
           Next Page
         </button>
       </div>
-    </div>
+    </Wrapper>
   );
 }
 

@@ -11,7 +11,7 @@ export default function Home() {
   const chartRef = useRef(null);
   const [hour, setHour] = useState(2);
   const [series, setSeries] = useState(
-    paramsData.map((item, index) => ({
+  paramsData.map((item, index) => ({
       ...item,
       showSymbol: true,
       data: new Array(hour / 2)
