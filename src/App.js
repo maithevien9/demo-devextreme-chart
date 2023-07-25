@@ -154,10 +154,10 @@ function About() {
     ],
     grid: newArr.map((item, index) => {
       if (index === 1) {
-        return { height: 150, top: 216 };
+        return { height: 150, top: 240 };
       }
       if (index) {
-        return { height: 150, top: 200 * index };
+        return { height: 150, top: 220 * index };
       }
       return { height: 150, top: 30 };
     }),
@@ -184,13 +184,7 @@ function About() {
             show: false,
           },
         },
-        splitLine: {
-          show: true, // Set to false to hide the default split lines
-          lineStyle: {
-            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
-            // ... other lineStyle options
-          },
-        },
+
         offset: 0,
       };
     }),
@@ -201,16 +195,20 @@ function About() {
         gridIndex: index,
         offset: 20,
         splitLine: {
-          show: false,
+          show: true, // Set to false to hide the default split lines
+          lineStyle: {
+            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
+            // ... other lineStyle options
+          },
         },
-        show: false,
+        show: true,
       };
     }),
     series,
     graphic: series.map((item, index) => ({
       type: 'text',
       left: 150,
-      top: index ? (index === 1 ? 200 : 200 * index - 30) : 0, // Specify the y-coordinate (in pixels) of the text
+      top: index ? (index === 1 ? 210 : 220 * index - 30) : 0, // Specify the y-coordinate (in pixels) of the text
       style: {
         text: item.name, // The text you want to display
         fill: 'black', // The color of the text
@@ -221,7 +219,7 @@ function About() {
 
   return (
     <Wrapper>
-      <ReactEcharts option={options2} style={{ height: 200 * newArr.length + 30 }} opts={{ renderer: 'svg' }} ref={chartRef} />
+      <ReactEcharts option={options2} style={{ height: 200 * newArr.length + 190 }} opts={{ renderer: 'svg' }} ref={chartRef} />
 
       <div style={{ margin: 20, display: 'flex', gap: 20, marginLeft: 300 }}>
         <button
