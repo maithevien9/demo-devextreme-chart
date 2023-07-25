@@ -87,7 +87,7 @@ function About() {
                   width: 10,
                   height: 10,
                   position: 'start',
-                  distance: 20,
+                  distance: 26,
                 },
                 name: 'ii',
                 xAxis: '21632-3',
@@ -101,7 +101,7 @@ function About() {
                   width: 10,
                   height: 10,
                   position: 'start',
-                  distance: 20,
+                  distance: 26,
                 },
                 name: 'ii',
                 xAxis: '21232-3',
@@ -110,9 +110,6 @@ function About() {
           : [],
       lineStyle: {
         color: 'white',
-      },
-      label: {
-        distance: 20,
       },
     },
   }));
@@ -145,7 +142,7 @@ function About() {
         zoomLock: false,
         brushSelect: false,
         bottom: 0,
-        height: 20,
+        height: 30,
       },
       {
         type: 'inside',
@@ -156,10 +153,13 @@ function About() {
       },
     ],
     grid: newArr.map((item, index) => {
+      if (index === 1) {
+        return { height: 150, top: 216 };
+      }
       if (index) {
         return { height: 150, top: 200 * index };
       }
-      return { height: 150, top: 10 };
+      return { height: 150, top: 30 };
     }),
     xAxis: newArr.map((item, index) => {
       // if (index) {
@@ -171,6 +171,7 @@ function About() {
         type: 'category',
         axisLabel: {
           color: index === 8 ? 'black' : 'white',
+          opacity: index === 8 ? 1 : 0,
         },
         axisPointer: {
           show: true,
@@ -178,6 +179,9 @@ function About() {
             color: '#FF6700', // Customize the color of the split lines
             type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
             // ... other lineStyle options
+          },
+          label: {
+            show: false,
           },
         },
         splitLine: {
@@ -203,60 +207,25 @@ function About() {
       };
     }),
     series,
-  };
-
-  const option3 = {
-    xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      boundaryGap: false,
-      splitLine: {
-        show: false,
+    graphic: series.map((item, index) => ({
+      type: 'text',
+      left: 150,
+      top: index ? (index === 1 ? 200 : 200 * index - 30) : 0, // Specify the y-coordinate (in pixels) of the text
+      style: {
+        text: item.name, // The text you want to display
+        fill: 'black', // The color of the text
+        font: 'bold 16px Arial', // The font style of the text
       },
-      offset: 10,
-      axisTick: {
-        show: false, // Hide the xAxis tick line
-      },
-      axisLine: {
-        show: false, // Hide the xAxis line
-      },
-    },
-    yAxis: {
-      type: 'value',
-    },
-    series: [
-      {
-        data: [150, 230, 224, null, 135, 147, 260],
-        type: 'line',
-        markLine: {
-          lineStyle: {
-            color: 'white',
-          },
-
-          label: {
-            formatter: '{b}',
-            backgroundColor: 'black',
-            borderRadius: 100,
-            color: 'black',
-            width: 20,
-            height: 20,
-          },
-          data: [
-            {
-              name: 'ii',
-              xAxis: 'Thu',
-            },
-          ],
-        },
-      },
-    ],
+    })),
   };
 
   return (
     <Wrapper>
-      <ReactEcharts option={options2} style={{ height: 200 * newArr.length }} opts={{ renderer: 'svg' }} ref={chartRef} />
+      <ReactEcharts option={options2} style={{ height: 200 * newArr.length + 30 }} opts={{ renderer: 'svg' }} ref={chartRef} />
+
       <div style={{ margin: 20, display: 'flex', gap: 20, marginLeft: 300 }}>
         <button
+          style={{ height: 30 }}
           onClick={() => {
             if (startValue >= 9) {
               setEndValue((prev) => prev - 10);
@@ -267,6 +236,7 @@ function About() {
           Prev Page
         </button>
         <button
+          style={{ height: 30 }}
           onClick={() => {
             if (paramsData2.length > endValue + 10) {
               setEndValue((prev) => prev + 10);
@@ -276,6 +246,18 @@ function About() {
         >
           Next Page
         </button>
+
+        <div>
+          Note:
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 6 }}>
+              <div style={{ height: 10, width: 10, background: 'red', borderRadius: 100 }} /> <span>No Data</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 6 }}>
+              <div style={{ height: 10, width: 10, background: 'black', borderRadius: 100 }} /> <span>Bad Data</span>
+            </div>
+          </div>
+        </div>
       </div>
     </Wrapper>
   );
