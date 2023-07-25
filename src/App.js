@@ -249,10 +249,10 @@ function About() {
           Note:
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 6 }}>
-              <div style={{ height: 10, width: 10, background: 'red', borderRadius: 100 }} /> <span>No Data</span>
+              <div style={{ height: 10, width: 10, background: 'red', borderRadius: 100 }} /> <span>Bad Data</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 6 }}>
-              <div style={{ height: 10, width: 10, background: 'black', borderRadius: 100 }} /> <span>Bad Data</span>
+              <div style={{ height: 10, width: 10, background: 'black', borderRadius: 100 }} /> <span>No Data</span>
             </div>
           </div>
         </div>
