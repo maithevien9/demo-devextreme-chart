@@ -243,9 +243,15 @@
   gap: 10
 }
 
+.print-view {
+  position: absolute;
+  left: -150px;
+  top: 120px;
+}
+
 @media screen {
   #printSection {
-    display: none;
+    visibility: hidden;
   }
 }
 
@@ -265,9 +271,11 @@
 
   #printSection {
     position: absolute;
-    left: 0;
-    top: 0;
+    left: -100px;
+    top: 0px;
   }
+
+
 
   @page {
     margin-top: 0;

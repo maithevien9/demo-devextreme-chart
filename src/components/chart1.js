@@ -6,12 +6,15 @@ import paramsData from '../paramsHasAltitude.json';
 import paramsWithoutAltitude from '../paramsWithoutAltitude.json';
 import { Button, Modal, Input, Select, Space, Form, Radio, Checkbox } from 'antd';
 import { cloneDeep } from 'lodash-es';
+import Print from './print';
+import './print.css';
+import html2canvas from 'html2canvas';
 
 export default function Home() {
   const chartRef = useRef(null);
   const [hour, setHour] = useState(2);
   const [series, setSeries] = useState(
-  paramsData.map((item, index) => ({
+    paramsData.map((item, index) => ({
       ...item,
       showSymbol: true,
       data: new Array(hour / 2)
@@ -194,30 +197,25 @@ export default function Home() {
   }, []);
 
   const handlePrint = (value) => {
-    const elem = document.getElementById('componentB');
-    var domClone = elem.cloneNode(true);
+    // const elem = document.getElementById('componentB');
 
-    let printSection;
+    const divElement = document.getElementById('componentB');
 
-    printSection = document.createElement('div');
-    printSection.id = 'printSection';
-    document.body.appendChild(printSection);
+    html2canvas(divElement).then(function (canvas) {
+      const imageData = canvas.toDataURL('image/png');
 
-    printSection.appendChild(domClone);
-    setTimeout(() => window.print(), 500);
+      const imgElement = document.createElement('img');
+      imgElement.src = imageData;
 
-    // const printContent = document.getElementById('componentB');
-    // if (printContent) {
-    //   const printWindow = window.open('', '_blank');
-    //   printWindow.document.write('<html><head><title>Print Preview</title>');
-    //   printWindow.document.write('<style type="text/css">@media print { @page { margin-top: 0; margin-bottom: 0; } }</style>');
-    //   printWindow.document.write('</head><body>');
-    //   printWindow.document.write('<div id="print-wrapper">' + printContent.innerHTML + '</div>');
-    //   printWindow.document.write('<script type="text/javascript">window.onafterprint = function() { window.close(); }</script>');
-    //   printWindow.document.write('</body></html>');
-    //   printWindow.document.close();
-    //   printWindow.print();
-    // }
+      let printSection;
+
+      printSection = document.createElement('div');
+      printSection.id = 'printSection';
+      document.body.appendChild(printSection);
+
+      printSection.appendChild(imgElement);
+      setTimeout(() => window.print(), 500);
+    });
   };
 
   const { Option } = Select;
@@ -244,17 +242,9 @@ export default function Home() {
       </div>
 
       <Modal title='Config Printing Area' open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1300} okText='Print Option'>
-        <div style={{ display: 'flex' }}>
-          <div id='componentB'>
-            <ReactEcharts
-              option={secondaryOptions}
-              style={{ height: 540, paddingLeft: 50, width: 700 }}
-              ref={chartRef}
-              opts={{ renderer: 'svg' }}
-              key={chartKey}
-            />
-          </div>
-          <div style={{ width: 500 }}>
+        <div style={{ display: 'flex', height: 1300, gap: 300 }}>
+          <Print />
+          <div style={{ width: 500, paddingTop: 40 }}>
             <Form
               form={form}
               onFinish={handlePrint}
@@ -274,7 +264,7 @@ export default function Home() {
                         <Radio value={1}>Selected Area</Radio>
                         <Radio value={2}>
                           Range of Frame
-                          {value === 2 ? (
+                          {/* {value === 2 ? (
                             <div style={{ display: 'flex', gap: 20 }}>
                               <div>
                                 Start: <Input style={{ width: 100, marginLeft: 10 }} />
@@ -283,7 +273,7 @@ export default function Home() {
                                 End: <Input style={{ width: 100, marginLeft: 10 }} />
                               </div>
                             </div>
-                          ) : null}
+                          ) : null} */}
                         </Radio>
 
                         <Radio value={3}>Frames on Screen</Radio>
@@ -300,7 +290,7 @@ export default function Home() {
                     Page
                   </div>
 
-                  <h3 style={{ marginTop: 200 }}>
+                  <h3 style={{ position: 'absolute', bottom: 50, right: 20 }}>
                     Note: Ensure a perfect printout by choosing the correct printing area. Take a moment to verify before you proceed!
                   </h3>
                 </div>
