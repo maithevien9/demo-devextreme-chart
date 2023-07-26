@@ -244,7 +244,7 @@ export default function Home() {
       <Modal title='Config Printing Area' open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1300} okText='Print Option'>
         <div style={{ display: 'flex', height: 1300, gap: 300 }}>
           <Print />
-          <div style={{ width: 500, paddingTop: 40 }}>
+          <div style={{ width: 500, paddingTop: 20 }}>
             <Form
               form={form}
               onFinish={handlePrint}

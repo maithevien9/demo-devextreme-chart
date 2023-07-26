@@ -246,7 +246,7 @@
 .print-view {
   position: absolute;
   left: -150px;
-  top: 120px;
+  top: 80px;
 }
 
 @media screen {
