@@ -7,7 +7,6 @@ import paramsWithoutAltitude from '../paramsWithoutAltitude.json';
 import { Button, Modal, Input, Select, Space, Form, Radio, Checkbox } from 'antd';
 import { cloneDeep } from 'lodash-es';
 import Print from './print';
-import './print.css';
 import html2canvas from 'html2canvas';
 
 export default function Home() {
@@ -17,6 +16,7 @@ export default function Home() {
     paramsData.map((item, index) => ({
       ...item,
       showSymbol: true,
+
       data: new Array(hour / 2)
         .fill(null)
         .map((item2) => {
@@ -218,11 +218,11 @@ export default function Home() {
     });
   };
 
-  const { Option } = Select;
   const [form] = Form.useForm();
 
   const [value, setValue] = useState(1);
   const [checked, setChecked] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
 
   const onChange = (e) => {
     console.log('radio checked', e.target.value);
@@ -232,13 +232,183 @@ export default function Home() {
   const onChangeCheckBox = (e) => {
     setChecked(e.target.checked);
   };
+
+  const params = series.map((item) => item.name);
+
+  const calculations = ['<', '<=', '=', '!=', '>=', '>'];
+
+  const calculations2 = ['AND', 'OR', '(', ')'];
+
+  const onClickParams = (name, isParams) => {
+    const currentValue = form.getFieldValue('search') ?? '';
+    // const lastText = currentValue.split(' ')[currentValue.split(' ').length - 1];
+
+    form.setFieldValue('search', currentValue ? `${currentValue} ${name}` : name);
+  };
+
+  const handleSearch = (va) => {
+    // const chart = chartRef.current.getEchartsInstance();
+    // const option = chart.getOption();
+
+    // const updatedOptions = {
+    //   ...option,
+    //   series: series.map((item) => ({
+    //     ...item,
+    //     markLine: { itemStyle: { color: 'rgba(255, 173, 177, 0.4)' }, label: { formatter: '{b}' }, data: [{ xAxis: '21335-1' }] },
+    //   })),
+    // };
+
+    // chart.setOption(updatedOptions);
+
+    if (va) {
+      setSeries((prev) =>
+        prev.map((item) => ({
+          ...item,
+          markLine: { itemStyle: { color: 'rgba(255, 173, 177, 0.4)' }, label: { formatter: '{b}' }, data: [{ xAxis: '21335-1' }] },
+          markArea: {},
+        }))
+      );
+    } else {
+      setSeries((prev) =>
+        prev.map((item) => ({
+          ...item,
+          markLine: {},
+          markArea: {
+            itemStyle: {
+              color: 'rgba(255, 173, 177, 0.4)',
+            },
+            data: [
+              [
+                {
+                  xAxis: '22238-1',
+                },
+                {
+                  xAxis: '22625-1',
+                },
+              ],
+            ],
+          },
+        }))
+      );
+      //
+    }
+
+    setChartKey((prev) => prev + 1);
+  };
+
   return (
     <div>
       <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} key={chartKey} />
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', gap: 200, marginTop: 50 }}>
         <Button type='primary' onClick={showModal}>
           Print
         </Button>
+
+        <div style={{ display: 'flex', gap: 50 }}>
+          <div style={{ display: 'flex', gap: 30, border: '1px solid black', flexDirection: 'column', padding: 10, borderRadius: 10 }}>
+            {params.map((item) => (
+              <div style={{ cursor: 'pointer' }} onClick={() => onClickParams(item)}>
+                {item}
+              </div>
+            ))}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              gap: 30,
+              border: '1px solid black',
+              flexDirection: 'column',
+              padding: 10,
+              borderRadius: 10,
+              width: 300,
+            }}
+          >
+            {isSearched ? (
+              <div>
+                <div onClick={() => setIsSearched(false)} style={{ cursor: 'pointer' }}>
+                  Back
+                </div>
+
+                <div style={{ marginTop: 10 }}>Found Result</div>
+
+                <div style={{ display: 'flex', gap: 10, flexDirection: 'column', marginTop: 20 }}>
+                  <strong style={{ cursor: 'pointer' }} onClick={() => handleSearch(true)}>
+                    21335-1
+                  </strong>
+                  <strong style={{ cursor: 'pointer' }} onClick={() => handleSearch(false)}>
+                    From 22238-1 to 22625-1
+                  </strong>
+                </div>
+              </div>
+            ) : (
+              <Form form={form} layout='vertical' autoComplete='off' onFinish={() => setIsSearched(true)}>
+                <Form.Item name='search' label='Search Criteria'>
+                  <Input.TextArea placeholder='Search Criteria' />
+                </Form.Item>
+
+                <Form.Item name='parameter' label='Parameters'>
+                  <Select options={params.map((item) => ({ value: item, label: item }))} onChange={(va) => onClickParams(va)} />
+                </Form.Item>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, width: 300 }}>
+                  {calculations.map((item) => (
+                    <div
+                      style={{
+                        height: 30,
+                        width: 30,
+                        border: '1px solid black',
+                        borderRadius: 4,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => onClickParams(item, true)}
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <Form.Item name='value'>
+                    <Input placeholder='Input value' />
+                  </Form.Item>
+                  <Button onClick={() => onClickParams(form.getFieldValue('value'))}>Add</Button>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, width: 300 }}>
+                  {calculations2.map((item) => (
+                    <div
+                      style={{
+                        height: 30,
+                        width: 50,
+                        border: '1px solid black',
+                        borderRadius: 4,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => onClickParams(item, true)}
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
+                <Form.Item>
+                  <Space>
+                    <Button type='primary' htmlType='submit'>
+                      Submit
+                    </Button>
+
+                    <Button type='primary' onClick={() => form.resetFields()}>
+                      Reset
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            )}
+          </div>
+        </div>
       </div>
 
       <Modal title='Config Printing Area' open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1300} okText='Print Option'>
