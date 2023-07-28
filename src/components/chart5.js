@@ -12,6 +12,15 @@ const Wrapper = styled.div`
   [clip-path='url(#zr1-c0)'] {
     display: none !important;
   }
+  [clip-path='url(#zr3-c0)'] {
+    display: none !important;
+  }
+  [clip-path='url(#zr4-c0)'] {
+    display: none !important;
+  }
+  [clip-path='url(#zr5-c0)'] {
+    display: none !important;
+  }
 `;
 
 export default function Home() {
