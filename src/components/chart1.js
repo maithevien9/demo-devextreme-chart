@@ -1,22 +1,171 @@
 import ReactEcharts from 'echarts-for-react';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import '../App.css';
 import lastData from '../lastData.json';
 import paramsData from '../paramsHasAltitude.json';
-import paramsWithoutAltitude from '../paramsWithoutAltitude.json';
 import { Button, Modal, Input, Select, Space, Form, Radio, Checkbox } from 'antd';
-import { cloneDeep } from 'lodash-es';
 import Print from './print';
 import html2canvas from 'html2canvas';
+
+import styled from 'styled-components';
+
+const minZoomForData = 1;
+
+const Wrapper = styled.div`
+  path[stroke='rgb(255,0,0)'] {
+    transform: translateY(25px) !important;
+  }
+  path[stroke='red'] {
+    transform: translateY(25px) !important;
+  }
+`;
+
+function getMinDataFromArray(arr) {
+  if (!Array.isArray(arr)) {
+    throw new Error('Input must be an array.');
+  }
+
+  if (arr.length === 0) {
+    throw new Error('Array must not be empty.');
+  }
+
+  let minData = arr[0].data[0];
+
+  for (let i = 0; i < arr.length; i++) {
+    const currentData = arr[i].data;
+    const currentMin = Math.min(...currentData);
+
+    if (currentMin < minData) {
+      minData = currentMin;
+    }
+  }
+
+  return minData;
+}
 
 export default function Home() {
   const chartRef = useRef(null);
   const [hour, setHour] = useState(2);
+  const [zoomRatio, setZoomRatio] = useState(100);
+
+  const minVa = getMinDataFromArray(paramsData);
+
+  const getZoomRatio = () => {
+    const chart = chartRef.current.getEchartsInstance();
+    const option = chart.getOption();
+    const newZoomRatio = option.dataZoom[0].end - option.dataZoom[0].start;
+
+    setZoomRatio(newZoomRatio);
+  };
+
+  const handleReStore = () => {
+    setZoomRatio(100);
+  };
+
+  useEffect(() => {
+    if (zoomRatio < minZoomForData || zoomRatio > minZoomForData) {
+      resetSeries();
+    }
+  }, [zoomRatio]);
+
+  const resetSeries = useCallback(() => {
+    setSeries((prev) =>
+      paramsData.map((item, index) => ({
+        ...item,
+        showSymbol: true,
+        data: new Array(hour / 2)
+          .fill(null)
+          .map((item2) => {
+            return item.data;
+          })
+          .flat()
+          .map((i) => ({ value: i, symbol: 'none' })),
+        markLine: {
+          data:
+            zoomRatio > minZoomForData
+              ? [
+                  {
+                    label: {
+                      formatter: '{b}',
+                      backgroundColor: 'red',
+                      borderRadius: 0,
+                      color: 'black',
+                      width: 20,
+                      height: 3,
+                      position: 'start',
+                      distance: -2.5,
+                    },
+                    name: '  ',
+                    xAxis: '21079-4',
+                  },
+                ]
+              : [],
+          lineStyle: {
+            color: 'white',
+          },
+        },
+      }))
+    );
+  }, [hour, zoomRatio]);
+
+  const handleChartClick = useCallback(
+    (params) => {
+      if (params.componentType === 'markLine') {
+        const chart = chartRef.current.getEchartsInstance();
+        const option = chart.getOption();
+        const index = option.xAxis[0].data.findIndex((item) => item === params.data.coord[0]);
+        const max = option.xAxis[0].data.length;
+        const percent = (100 * index) / max;
+
+        setZoomRatio(0.04);
+
+        const updatedOptions = {
+          ...option,
+          dataZoom: [
+            {
+              type: 'slider',
+              showDetail: false,
+              zoomLock: false,
+              brushSelect: false,
+              start: percent - 0.02,
+              end: percent + 0.02,
+            },
+            {
+              type: 'inside',
+            },
+          ],
+        };
+
+        // Update the chart options using setOption
+        chart.setOption(updatedOptions);
+        resetSeries();
+      }
+    },
+    [resetSeries]
+  );
+
+  useEffect(() => {
+    // Call getZoomRatio initially
+    getZoomRatio();
+
+    // Attach getZoomRatio to the chart's zoom event
+    const chartInstance = chartRef.current.getEchartsInstance();
+    chartInstance.on('dataZoom', getZoomRatio);
+    chartInstance.on('restore', handleReStore);
+    chartInstance.on('click', handleChartClick);
+
+    // Cleanup function to detach the event listener
+    return () => {
+      chartInstance.off('dataZoom', getZoomRatio);
+      chartInstance.off('restore', handleReStore);
+      chartInstance.off('click', handleChartClick);
+    };
+  }, [chartRef, handleChartClick]);
+
   const [series, setSeries] = useState(
     paramsData.map((item, index) => ({
       ...item,
       showSymbol: true,
-
       data: new Array(hour / 2)
         .fill(null)
         .map((item2) => {
@@ -24,8 +173,49 @@ export default function Home() {
         })
         .flat()
         .map((i) => ({ value: i, symbol: 'none' })),
+      markLine: {
+        data:
+          zoomRatio > minZoomForData
+            ? [
+                {
+                  label: {
+                    formatter: '{b}',
+                    backgroundColor: 'red',
+                    borderRadius: 0,
+                    color: 'black',
+                    width: 10,
+                    height: 2,
+                    position: 'start',
+                    distance: 6,
+                  },
+                  name: '  ',
+                  xAxis: '21079-4',
+                },
+              ]
+            : [],
+        lineStyle: {
+          color: 'white',
+        },
+      },
     }))
   );
+
+  const noDataFrame = '21079-4';
+  // const line
+
+  const indexNoData = lastData.findIndex((item) => item.frame === noDataFrame);
+
+  const badDataLine = {
+    name: 'badData',
+    type: 'line',
+    stack: 'total',
+    color: 'red',
+    showSymbol: false,
+    data: paramsData[0].data.map((item, index) => {
+      if (index === indexNoData || index === indexNoData + 1 || index === indexNoData - 1) return minVa;
+      return null;
+    }),
+  };
 
   const [chartKey, setChartKey] = useState(0);
 
@@ -50,9 +240,13 @@ export default function Home() {
       .flat(),
   ];
 
+  const formattedData = zoomRatio < minZoomForData ? [badDataLine, ...series] : series;
   const options = {
     grid: { show: false },
-
+    // tooltip: {
+    //   show: true,
+    //   trigger: 'axis',
+    // },
     toolbox: {
       feature: {
         dataZoom: {
@@ -69,14 +263,14 @@ export default function Home() {
         type: 'category',
         data: newXAxis,
         boundaryGap: false,
-        axisPointer: {
-          show: true,
-          lineStyle: {
-            color: '#FF6700', // Customize the color of the split lines
-            type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
-            // ... other lineStyle options
-          },
-        },
+        // axisPointer: {
+        //   show: true,
+        //   lineStyle: {
+        //     color: '#FF6700', // Customize the color of the split lines
+        //     type: 'solid', // Choose the type of line (solid, dashed, dotted, etc.)
+        //     // ... other lineStyle options
+        //   },
+        // },
         splitLine: {
           show: true, // Set to false to hide the default split lines
           lineStyle: {
@@ -111,7 +305,9 @@ export default function Home() {
       // hide the yAxis line
       show: false,
     },
-    series,
+    series: formattedData.map((item) => ({
+      ...item,
+    })),
     dataZoom: [
       {
         type: 'slider',
@@ -123,49 +319,6 @@ export default function Home() {
         type: 'inside',
       },
     ],
-  };
-
-  const secondaryOptions = {
-    grid: { show: false },
-
-    xAxis: [
-      {
-        type: 'category',
-        data: newXAxis,
-        boundaryGap: false,
-        axisPointer: {
-          show: false,
-        },
-        splitLine: {
-          show: true, // Set to false to hide the default split lines
-        },
-      },
-      {
-        // type: 'category',
-        boundaryGap: false,
-        data: newXAxis2,
-        splitLine: {
-          show: false,
-        },
-        offset: 10,
-        axisTick: {
-          show: false, // Hide the xAxis tick line
-        },
-        axisLine: {
-          show: false, // Hide the xAxis line
-        },
-      },
-    ],
-    yAxis: {
-      type: 'value',
-      offset: 20,
-      splitLine: {
-        show: false,
-      },
-      // hide the yAxis line
-      show: false,
-    },
-    series,
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -297,7 +450,9 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <Wrapper>
+      <div>Zoom Level: {Math.round((100 * 100) / zoomRatio)}%</div>
+
       <ReactEcharts option={options} style={{ height: 540, paddingLeft: 50 }} ref={chartRef} opts={{ renderer: 'svg' }} key={chartKey} />
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', gap: 200, marginTop: 50 }}>
         <Button type='primary' onClick={showModal}>
@@ -469,6 +624,6 @@ export default function Home() {
           </div>
         </div>
       </Modal>
-    </div>
+    </Wrapper>
   );
 }

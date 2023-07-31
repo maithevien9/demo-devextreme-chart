@@ -74,44 +74,44 @@ function About() {
     xAxisIndex: index,
     yAxisIndex: index,
     showSymbol: false,
-    markLine: {
-      data:
-        index === 8
-          ? [
-              {
-                label: {
-                  formatter: '{b}',
-                  backgroundColor: 'black',
-                  borderRadius: 100,
-                  color: 'black',
-                  width: 10,
-                  height: 10,
-                  position: 'start',
-                  distance: 26,
-                },
-                name: 'ii',
-                xAxis: '21632-3',
-              },
-              {
-                label: {
-                  formatter: '{b}',
-                  backgroundColor: 'red',
-                  borderRadius: 100,
-                  color: 'red',
-                  width: 10,
-                  height: 10,
-                  position: 'start',
-                  distance: 26,
-                },
-                name: 'ii',
-                xAxis: '21232-3',
-              },
-            ]
-          : [],
-      lineStyle: {
-        color: 'white',
-      },
-    },
+    // markLine: {
+    //   data:
+    //     index === 8
+    //       ? [
+    //           {
+    //             label: {
+    //               formatter: '{b}',
+    //               backgroundColor: 'black',
+    //               borderRadius: 100,
+    //               color: 'black',
+    //               width: 10,
+    //               height: 10,
+    //               position: 'start',
+    //               distance: 26,
+    //             },
+    //             name: 'ii',
+    //             xAxis: '21632-3',
+    //           },
+    //           {
+    //             label: {
+    //               formatter: '{b}',
+    //               backgroundColor: 'red',
+    //               borderRadius: 100,
+    //               color: 'red',
+    //               width: 10,
+    //               height: 10,
+    //               position: 'start',
+    //               distance: 26,
+    //             },
+    //             name: 'ii',
+    //             xAxis: '21232-3',
+    //           },
+    //         ]
+    //       : [],
+    //   lineStyle: {
+    //     color: 'white',
+    //   },
+    // },
   }));
 
   const options2 = {
