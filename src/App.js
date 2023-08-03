@@ -45,7 +45,7 @@ const Scroll = styled.div`
     margin-left: 30px;
     float: left;
     height: ${height}px;
-    width: 105px;
+    width: 15px;
     background: #f5f5f5;
     overflow-y: scroll;
     margin-bottom: 25px;
@@ -93,7 +93,6 @@ const Wrapper = styled.div`
   }
 `;
 
-
 const bc = new BroadcastChannel('my-awesome-site');
 
 function About() {
@@ -105,7 +104,7 @@ function About() {
 
   const debouncedPosition = debounce((value) => {
     setPosition(value);
-    setChartKey((prev) => prev + 1);
+    // setChartKey((prev) => prev + 1);
   }, 100);
 
   const [startValue, setStartValue] = useState(0);
