@@ -93,6 +93,7 @@ const Wrapper = styled.div`
   }
 `;
 
+
 const bc = new BroadcastChannel('my-awesome-site');
 
 function About() {
