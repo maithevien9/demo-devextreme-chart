@@ -7,6 +7,7 @@ import lastData from './lastData.json';
 import paramsData2 from './params2.json';
 import Sroll from './components/Sroll';
 import { debounce } from 'lodash-es';
+import Table from './components/Table';
 
 // import paramsData from './params30h.json';
 import Chart3 from './components/charts3';
@@ -363,6 +364,10 @@ function App() {
           <li>
             <Link to='/demo4'>Check Altitude</Link>
           </li>
+
+          <li>
+            <Link to='/demo5'>Table</Link>
+          </li>
         </ul>
 
         {/* <button
@@ -390,6 +395,9 @@ function App() {
           </Route>
           <Route path='/demo4'>
             <CheckAltitude />
+          </Route>
+          <Route path='/demo5'>
+            <Table />
           </Route>
         </Switch>
       </div>
