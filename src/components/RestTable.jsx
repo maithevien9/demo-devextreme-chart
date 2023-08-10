@@ -111,19 +111,15 @@ export default function RestTable({
   const [startRowIndex, setStartRowIndex] = useState(null);
   const [columns, setColumns] = useState(initialColumns);
 
-  const onDoubleClick = (event, key) => {
+  const onDoubleClick = (key, width) => {
     const index = initialColumns.findIndex((column) => column.key === key);
-
-    const newWidth = key.length * 14;
 
     setColumns((prevColumns) => {
       const nextColumns = [...prevColumns];
       nextColumns[index] = {
         ...nextColumns[index],
-        width: newWidth,
+        width: initialColumns[index].width,
       };
-
-      console.log({ index, nextColumns });
 
       return nextColumns;
     });
@@ -224,7 +220,7 @@ export default function RestTable({
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              onDoubleClick={(event) => onDoubleClick(event, col.key)}
+              onDoubleClick={(event) => onDoubleClick(col.key)}
             >
               {col.title}
             </div>

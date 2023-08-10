@@ -38,14 +38,14 @@ export default function Table() {
       //   Reference Number
       // </div>
       //       ),
-      width: 170,
+      width: 180,
     },
     {
       dataIndex: 'aircraftRegistration',
       key: 'aircraftRegistration',
       sorter: (value, nextValue) => Number(value.aircraftRegistration) - Number(nextValue.aircraftRegistration),
       title: 'Aircraft Registration',
-      width: 180,
+      width: 190,
     },
     {
       dataIndex: 'aircraftType',
@@ -78,35 +78,35 @@ export default function Table() {
       key: 'channel1Duration',
       sorter: (value, nextValue) => Number(value.channel1Duration) - Number(nextValue.channel1Duration),
       title: 'Channel 1 Duration',
-      width: 175,
+      width: 185,
     },
     {
       dataIndex: 'channel2Duration',
       key: 'channel2Duration',
       sorter: (value, nextValue) => Number(value.channel1Duration) - Number(nextValue.channel1Duration),
       title: 'Channel 2 Duration',
-      width: 175,
+      width: 185,
     },
     {
       dataIndex: 'channel3Duration',
       key: 'channel3Duration',
       sorter: (value, nextValue) => Number(value.channel1Duration) - Number(nextValue.channel1Duration),
       title: 'Channel 3 Duration',
-      width: 175,
+      width: 185,
     },
     {
       dataIndex: 'channel4Duration',
       key: 'channel4Duration',
       sorter: (value, nextValue) => Number(value.channel1Duration) - Number(nextValue.channel1Duration),
       title: 'Channel 4 Duration',
-      width: 175,
+      width: 185,
     },
     {
       dataIndex: 'channel5Duration',
       key: 'channel5Duration',
       sorter: (value, nextValue) => Number(value.channel1Duration) - Number(nextValue.channel1Duration),
       title: 'Channel 5 Duration',
-      width: 175,
+      width: 185,
     },
     {
       fixed: 'right',
