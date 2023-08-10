@@ -98,7 +98,6 @@ const bc = new BroadcastChannel('my-awesome-site');
 
 function About() {
   const chartHeight = (height - 70 - (chartsOnSCreen - 1) * 100) / chartsOnSCreen;
-
   const [position, setPosition] = useState({ start: 0, end: chartsOnSCreen });
   const distanceParams = 100;
   const [chartKey, setChartKey] = useState(0);
@@ -237,12 +236,12 @@ function About() {
             show: false,
           },
         },
-
         offset: 0,
       };
     }),
 
     yAxis: newArr.map((item, index) => {
+      const min = Math.min(...item.data, -1000);
       return {
         type: 'value',
         gridIndex: index,
@@ -255,6 +254,7 @@ function About() {
           },
         },
         show: true,
+        min,
       };
     }),
     series,
