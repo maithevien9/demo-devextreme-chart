@@ -22,7 +22,7 @@ const chartsOnSCreen = Math.floor(height / chartHeight);
 
 const Scroll = styled.div`
   position: absolute;
-  top: 150px;
+  top: 180px;
   right: 10px;
 
   header {
@@ -288,7 +288,7 @@ function About() {
   return (
     <Wrapper>
       <ReactEcharts option={options2} style={{ height: height }} opts={{ renderer: 'svg' }} ref={chartRef} key={chartKey} />
-      <Sroll />
+      {/* <Sroll /> */}
 
       <div style={{ margin: 20, display: 'flex', gap: 20, marginLeft: 300 }}>
         <button
