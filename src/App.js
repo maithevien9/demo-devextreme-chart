@@ -241,7 +241,7 @@ function About() {
     }),
 
     yAxis: newArr.map((item, index) => {
-      const min = Math.min(...item.data, -1000);
+      const min = Math.min(...item.data);
       return {
         type: 'value',
         gridIndex: index,
